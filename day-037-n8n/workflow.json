@@ -1,0 +1,292 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0c6ec995-5330-4182-aae7-3cbbcacbdf85",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "return [\n  {\"name\": \"Anna\", \"company\": \"ABC\", \"budget\": 5000, \"request\": \"We need AI automation\"},\n  {\"name\": \"Ivan\", \"company\": \"TechCorp\", \"budget\": 3000, \"request\": \"CRM integration\"},\n  {\"name\": \"Maria\", \"company\": \"Studio\", \"budget\": 1500, \"request\": \"Web design\"},\n  {\"name\": \"Alex\", \"company\": \"Local Shop\", \"budget\": 500, \"request\": \"Consultation\"},\n  {\"name\": \"Elena\", \"company\": \"MegaCorp\", \"budget\": 10000, \"request\": \"AI agents pipeline\"},\n  {\"name\": \"Dmitry\", \"company\": \"StartUp\", \"budget\": None, \"request\": \"Need quote\"},\n  {\"name\": \"Svetlana\", \"company\": \"Consult\", \"budget\": \"invalid_number\", \"request\": \"Automation\"},\n  {\"name\": \"Igor\", \"company\": \"Agency\", \"budget\": 0, \"request\": \"AI bot\"},\n  {\"name\": \"Olga\", \"company\": \"Retail\", \"budget\": 2500, \"request\": \"Audit\"},\n  {\"name\": \"Maxim\", \"company\": \"Enterprise\", \"budget\": 4500, \"request\": \"Full AI system\"}\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "3af1e43b-a600-44e0-a77c-8be951217c79",
+      "name": "Code in Python"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "666bb0a1-724b-4e2b-9c2e-0f56752be3db",
+              "name": "=clean_budget",
+              "value": "={{ Number($json.budget) || 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "d38d7500-f2de-43b1-9b13-28e8e8e0d828",
+              "name": "client_type",
+              "value": "={{ (Number($json.budget) || 0) >= 3000 ? \"VIP\" : \"Standard\" }}",
+              "type": "string"
+            },
+            {
+              "id": "15bf6f44-dcdc-46a8-ab58-971dbcfde284",
+              "name": "priority",
+              "value": "={{ (Number($json.budget) || 0) >= 5000 ? \"High\" : ((Number($json.budget) || 0) >= 1500 ? \"Medium\" : \"Low\") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "e5fa7441-d376-4b53-ad14-aeaf6d1233f4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.priority }}",
+                    "rightValue": "High",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f018374e-330a-49c5-bfea-78316b8334a0"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5a6ff1d5-22ab-4ae7-b07c-0e59c01c83ba",
+                    "leftValue": "={{ $json.priority }}",
+                    "rightValue": "Medium",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "24551e98-a93d-4bbb-b7c7-485772c47d68",
+                    "leftValue": "={{ $json.priority }}",
+                    "rightValue": "Low",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        0
+      ],
+      "id": "20e9caa6-7fd7-4fd9-8d64-190c07da3901",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9ab015d7-1309-4b12-a8dc-951d8ce1f96c",
+              "name": "summary",
+              "value": "=[HIGH PRIORITY] {{ $json.client_type }} Lead: {{ $json.name }} ({{ $json.company }})\nБюджет: ${{ $json.clean_budget }}\nЗапрос: {{ $json.request }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        896,
+        -106.16666666666663
+      ],
+      "id": "a874f83f-c307-4323-add9-a552dcd8f756",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "27d2d445-a4bf-4611-84e9-182659a11034",
+              "name": "summary",
+              "value": "=[MEDIUM PRIORITY] {{ $json.client_type }} Lead: {{ $json.name }} ({{ $json.company }}) Бюджет: ${{ $json.clean_budget }} Запрос: {{ $json.request }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        896,
+        0
+      ],
+      "id": "52d5109d-dffe-4b01-b3f0-4b085c4cfc7c",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9fa467a3-9aae-4612-b327-ca0d9ef4f4b6",
+              "name": "summary",
+              "value": "=[LOW PRIORITY] {{ $json.client_type }} Lead: {{ $json.name }} ({{ $json.company }}) Бюджет: ${{ $json.clean_budget }} Запрос: {{ $json.request }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        576,
+        288
+      ],
+      "id": "6aadabd7-6ffb-41f2-8788-6680deaa1e38",
+      "name": "Edit Fields3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in Python",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "86bd3283-ca3e-4afd-8722-514b8ee7c7f0",
+  "meta": {
+    "instanceId": "ead3a441050fa909029b7e1a41fa275f57196de4e4bb609a4471987554548da0"
+  },
+  "nodeGroups": [],
+  "id": "oBIX4kQAMyAitiPV",
+  "tags": []
+}
