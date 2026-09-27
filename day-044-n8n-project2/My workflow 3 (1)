@@ -1,0 +1,622 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "4f3ce688-2482-4d0b-83b6-7de7a183bc5e",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        16
+      ],
+      "id": "bb9dfdf5-d036-4277-a2e0-0a069cc98c7c",
+      "name": "Webhook",
+      "webhookId": "4f3ce688-2482-4d0b-83b6-7de7a183bc5e"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9a8e4977-c2a8-442b-8cad-8ba265f249e2",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "eee7ae45-f199-459a-ab4e-2c9f7a12d4aa",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "6c7c9620-693b-4bdd-bdac-248b18bf695e",
+              "leftValue": "={{ $json.budget }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "b14b87a1-b026-4fb1-811c-5fa8bec85819",
+              "leftValue": "={{ $json.budget }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        96,
+        16
+      ],
+      "id": "61bdeec6-ec4e-43ad-9a01-5eba0c26ed9a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.budget }}",
+                    "rightValue": 3000,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    },
+                    "id": "7fbb796c-ab5a-46f0-9486-1c73fdbc13fe"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": "={{ false }}"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "577e2abe-f698-47d8-ac85-506b904b13dd",
+                    "leftValue": "={{ $json.budget }}",
+                    "rightValue": 3000,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lt"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        -144
+      ],
+      "id": "c8e55721-3aa1-4000-9535-90d97f793219",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c09c03f9-ca33-4f93-8fee-fe88f5398e8a",
+              "name": "category",
+              "value": "=VIP",
+              "type": "string"
+            },
+            {
+              "id": "7f1bb0c2-65bc-4976-9373-1728e641f2f2",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "d72247e7-4cb0-4286-ae53-2aad346d14d8",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "8fea8500-44bd-46bd-b412-83c099076066",
+              "name": "company",
+              "value": "={{ $json.company }}",
+              "type": "string"
+            },
+            {
+              "id": "12d06507-3ab5-4fb8-90e6-ca9808bfc188",
+              "name": "budget",
+              "value": "={{ $json.budget }}",
+              "type": "number"
+            },
+            {
+              "id": "35189ef4-2b44-4ae6-85f2-624b6d1dd271",
+              "name": "message",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        608,
+        -224
+      ],
+      "id": "707e29ea-7514-4bdb-b5f7-bb60e90855c6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b1ca179-6137-44fd-9d03-d9db58226592",
+              "name": "category",
+              "value": "standart",
+              "type": "string"
+            },
+            {
+              "id": "5cbc1ebb-f3ad-4086-a3b0-2faf3cbd6747",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "90f3ba81-e721-42fd-a42e-6fed40fbdf7b",
+              "name": "email",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "b44d62ce-343c-4c03-ae7c-b30106b3ea77",
+              "name": "company",
+              "value": "={{ $json.company }}",
+              "type": "string"
+            },
+            {
+              "id": "4f721e6b-38fb-4a51-8e62-671496dcdbd1",
+              "name": "budget",
+              "value": "={{ $json.budget }}",
+              "type": "number"
+            },
+            {
+              "id": "69c555f9-6dfc-458c-a982-ab48638f66e2",
+              "name": "message",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        608,
+        -32
+      ],
+      "id": "297c64b6-76c1-46e4-8c82-a0be0c24cf96",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        16
+      ],
+      "id": "582a9652-0cba-45f8-be92-c71162eaec42",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ztChXrYwQrdsWWuUbCYw4MBfkiHm1-F4pr6lMXycN9w",
+          "mode": "list",
+          "cachedResultName": "Клиенты n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ztChXrYwQrdsWWuUbCYw4MBfkiHm1-F4pr6lMXycN9w/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Лист1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ztChXrYwQrdsWWuUbCYw4MBfkiHm1-F4pr6lMXycN9w/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget",
+              "displayName": "budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        832,
+        -224
+      ],
+      "id": "1e70871d-96ab-41eb-bb71-f5fa6221811f",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "c48QBn2nNBiYGiJc",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ztChXrYwQrdsWWuUbCYw4MBfkiHm1-F4pr6lMXycN9w",
+          "mode": "list",
+          "cachedResultName": "Клиенты n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ztChXrYwQrdsWWuUbCYw4MBfkiHm1-F4pr6lMXycN9w/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Лист1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ztChXrYwQrdsWWuUbCYw4MBfkiHm1-F4pr6lMXycN9w/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget",
+              "displayName": "budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        832,
+        -32
+      ],
+      "id": "f1ad1b2b-38e8-4190-8398-c315e49bec0b",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "c48QBn2nNBiYGiJc",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "=irinagarusova934@gmail.com",
+        "toEmail": "={{ $json.email }}",
+        "html": "=привет,  {{ $json.name }}! Рада вас видеть",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        -208
+      ],
+      "id": "07053df4-4722-433e-835b-36d01cc80c7d",
+      "name": "Send an Email",
+      "webhookId": "395efd36-4e91-46fc-b20f-41eeb73100f0",
+      "credentials": {
+        "smtp": {
+          "id": "tYwDO1IlDCAAcbFC",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "464451702",
+        "text": "=🔥 НОВЫЙ VIP-ЛИД!  👤 Имя: {{ $json.name }} 🏢 Компания: {{ $json.company }} 💰 Бюджет: ${{ $json.budget }} ✉️ Email: {{ $json.email }} 💬 Сообщение: {{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1056,
+        -224
+      ],
+      "id": "0e7804c3-e88f-4c50-9ab8-13e6557809e7",
+      "name": "Send a text message",
+      "webhookId": "f2d55f77-a8cd-433b-bc35-f8392b739107",
+      "credentials": {
+        "telegramApi": {
+          "id": "LCI7zsdxpvmABioO",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c9a31389-a017-4906-bdbd-7e7129a2678b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ead3a441050fa909029b7e1a41fa275f57196de4e4bb609a4471987554548da0"
+  },
+  "nodeGroups": [],
+  "id": "oBIX4kQAMyAitiPV",
+  "tags": []
+}
