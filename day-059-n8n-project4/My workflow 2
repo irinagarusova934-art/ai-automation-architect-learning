@@ -1,0 +1,506 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "4f3ce688-2482-4d0b-83b6-7de7a183bc5e",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "116e6144-ce4d-46c0-ab69-55ff010052ff",
+      "name": "Webhook",
+      "webhookId": "3a3fc6e5-d0f2-4967-8c6b-00ef79fb0f5e"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "01969494-ce6c-4a38-a891-d06cb5f7cde8",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "fb0d46cf-8c5c-46b5-b11f-c4c3c49c4a41",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "93a1030a-226d-4798-9b4f-9e027cb13f36",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "cac01665-5651-4fdb-94ff-1358295551ae",
+              "leftValue": "={{ $json.budget }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        32,
+        0
+      ],
+      "id": "a67e738f-b5c2-41b8-8be9-3910f6308b59",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Проанализируй входящее сообщение лида:\nИмя: {{ $json.name }}\nEmail: {{ $json.email }}\nБюджет: {{ $json.budget }}\nКатегория: {{ $json.category }}\n\nОпредели:\n1. \"priority\": Приоритет заявки (\"High\", \"Medium\", \"Low\"). Если бюджет от $3000 — это High.\n2. \"category\": Категория заявки (\"sales\", \"support\", \"partnership\", \"spam\").",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        240,
+        -288
+      ],
+      "id": "78eb8624-4cca-4cc3-a87b-5f111254a8ed",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        -96
+      ],
+      "id": "c2cf2d34-f68d-4292-8406-4cf420980653",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\"name\": \"Anna\",\n\"email\": \"anna@example.com\",\n\"budget\": 5000,\n\"priority\": \"high\",\n\"category\": \"IT\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        -112
+      ],
+      "id": "4948b9d2-e3f1-4a68-9b37-9b5b82cd01e0",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ztChXrYwQrdsWWuUbCYw4MBfkiHm1-F4pr6lMXycN9w",
+          "mode": "list",
+          "cachedResultName": "Клиенты n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ztChXrYwQrdsWWuUbCYw4MBfkiHm1-F4pr6lMXycN9w/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Лист1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ztChXrYwQrdsWWuUbCYw4MBfkiHm1-F4pr6lMXycN9w/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "category": "={{ $json.output.category }}",
+            "name": "={{ $json.output.name }}",
+            "email": "={{ $json.output.email }}",
+            "priority": "={{ $json.output.priority }}",
+            "budget": "={{ $json.output.budget }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "budget",
+              "displayName": "budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        -272
+      ],
+      "id": "b15359f3-340d-43fa-ab49-7ea5e56bceaa",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "c48QBn2nNBiYGiJc",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "464451702",
+        "text": "=🔥 Новый лид! Имя: {{ $json.name }} Email: {{ $json.email }} Приоритет: {{ $json.priority }} Категория: {{ $json.category }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        -416
+      ],
+      "id": "d7970403-242e-4db0-b811-2de2c77eada9",
+      "name": "Send a text message",
+      "webhookId": "332f0018-6c28-499e-ae53-b8bd709908f9",
+      "credentials": {
+        "telegramApi": {
+          "id": "LCI7zsdxpvmABioO",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Напиши персонализированный email-ответ для клиента {{ $json.name }}. Учти приоритет ({{ $json.priority }}) и категорию ({{ $json.category }}). Предложи назначить короткий созвон.",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "="
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        832,
+        -256
+      ],
+      "id": "6ee98934-ed24-40ca-92ab-6ce496587d75",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        784,
+        -48
+      ],
+      "id": "26115c67-046c-40d1-81a1-6dc8dce38c31",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        992,
+        0
+      ],
+      "id": "0ecf763c-abd2-4e18-83e4-d269a780072f",
+      "name": "Wait",
+      "webhookId": "deab0594-28cc-4419-9470-4be461c9502a"
+    },
+    {
+      "parameters": {
+        "chatId": "464451702",
+        "text": "=📝 Сгенерирован черновик ответа клиенту  Кому: {{ $('Append row in sheet').item.json.email }} Тема: Re: Ваш запрос  Текст письма: {{ $json.text }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Отправить Email",
+                    "additionalFields": {
+                      "url": "={{ $execution.resumeUrl.replace('/webhook-waiting/', '/webhook-waiting/test/') }}?action=approve"
+                    }
+                  },
+                  {
+                    "text": "❌ Отклонить",
+                    "additionalFields": {
+                      "url": "={{ $execution.resumeUrl.replace('/webhook-waiting/', '/webhook-waiting/test/') }}?action=reject"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "disable_web_page_preview": true
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        -256
+      ],
+      "id": "f4c99c41-b46f-47b7-ab26-66ef271299ba",
+      "name": "Send a text message1",
+      "webhookId": "aa96d90e-04b4-4990-9275-f0a009d8958e",
+      "credentials": {
+        "telegramApi": {
+          "id": "LCI7zsdxpvmABioO",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        []
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7b3be7f7-2b3e-494b-9c08-6e874d78f63d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ead3a441050fa909029b7e1a41fa275f57196de4e4bb609a4471987554548da0"
+  },
+  "nodeGroups": [],
+  "id": "OYfqR2BUyTCgDHCE",
+  "tags": []
+}
